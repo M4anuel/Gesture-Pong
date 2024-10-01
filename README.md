@@ -35,5 +35,5 @@ Unser Ziel ist es eine Schnittstelle zwischen Mensch und Maschine zu erstellen, 
  - Python als programmiersprache
  - Pygame als Gameengine
  - OpenPose/OpenCV als Gestikerkennung
-##Skizze
-![alt text](./Pictures/gesture_pong_skizze.png)
+## Skizze
+<img src="./Pictures/gesture_pong_skizze.png" alt="Projektskizze der Schnittstelle" width="200"/>
