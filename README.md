@@ -24,7 +24,8 @@ Unser Ziel ist es eine Schnittstelle zwischen Mensch und Maschine zu erstellen, 
     - Entwickeln eines Moduls, das die Position einer Hand erkennt und auf benutzbare Art wiedergibt.
     - Implementieren einer Kalibrierungsfunktion, um die Gestenerkennung an verschiedene Benutzer anzupassen.
  - Schnittstelle zwischen Gestik und Pong
-    - Entwickeln einer Schnittstelle, die die Paddles mithilfe der Handgestik bewegt. 
+    - Entwickeln einer Schnittstelle, die die Paddles mithilfe der Handgestik bewegt.
+       - Handbewegung nach oben (nördlich) und unten (südlich) bewegen die Paddles entsprechend nach oben und unten. Zum Start müssen beide erkennt werden.
     - Integration der beiden Module (Pong- und Gestikmodul)
 - Erweiterung auf mehrere Hände und Spieler
     - Modifizieren des Skripts, um die Positionen von mehreren Händen zu erkennen.
