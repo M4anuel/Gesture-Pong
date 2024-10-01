@@ -1,5 +1,5 @@
-
 # Gesture-Pong
+Unser Ziel ist es eine Schnittstelle zwischen Mensch und Maschine zu erstellen, die es erlaubt ohne Tastatur durch das Bewegen der Hände das Spiel Pong zu steuern. Dafür haben wir uns folgende Teilziele gesetzt:
 ## Ziele
  - [ ] Pong als Spiel programmieren
  - [ ]  Einzelspieler- & Mehrspielermodus
