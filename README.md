@@ -1,6 +1,6 @@
 
 # Gesture-Pong
-## Ziel
+## Ziele
  - [ ] Pong als Spiel programmieren
  - [ ]  Einzelspieler- & Mehrspielermodus
  - [ ] Mithilfe von OpenPose Position von einer Hand einlesen
