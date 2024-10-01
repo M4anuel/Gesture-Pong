@@ -36,4 +36,7 @@ Unser Ziel ist es eine Schnittstelle zwischen Mensch und Maschine zu erstellen, 
  - Pygame als Gameengine
  - OpenPose/OpenCV als Gestikerkennung
 ## Skizze
-<img src="./Pictures/gesture_pong_skizze.png" alt="Projektskizze der Schnittstelle" width="200"/>
+<img src="./Pictures/gesture_start_pong_skizze.png" alt="Projektskizze der Schnittstelle" width="500"/>
+Nach dem auswählen des Spielmodus (hier Zweispieler) wartet das Spiel, bis es die erwartete Anzahl (rechte) Hände erkennt wird. Wird während des Spiels das Tracking verloren so gibt es nach einer kleinen Pufferzeit (um das Tracking vielleicht wieder zu erkennen) eine Pausierung des Spiels. Zum Ende des Spiels wird das Tracking abgeschaltet.
+<img src="./Pictures/gesture_pong_skizze.png" alt="Projektskizze der Schnittstelle" width="500"/>
+Der Benutzer kann mithilfe von Handbewegung in nördliche oder südliche Richgung die Höhe des Paddles bestimmen. Dabei gibt die Höhenänderung der Hand an wieviel und wie schnell das Paddle sich bewegen sollte. Dies sollte für ein bis optional zwei Spieler funktionieren. Die Steuerung im Spielmenu wird klassisch über Tastatur und Maus verfügbar sein und ist nicht Teil der Schnittstelle.
