@@ -2,10 +2,12 @@
 Unser Ziel ist es eine Schnittstelle zwischen Mensch und Maschine zu erstellen, die es erlaubt ohne Tastatur durch das Bewegen der Hände das Spiel Pong zu steuern. Dafür haben wir uns folgende Teilziele gesetzt:
 ## Ziele
  - [ ] Pong als Spiel programmieren
- - [ ]  Einzelspieler- & Mehrspielermodus
  - [ ] Mithilfe von OpenPose Position von einer Hand einlesen
- - [ ] Mithilfe von OpenPose Position von mehrern Händen einlesen (Einer oder Zwei Personen)
  - [ ] Schnittstelle zwischen Gestik und Pong realisieren
+### Optionale Ziele
+ - [ ] Einzelspieler- & Mehrspielermodus
+ - [ ] Mithilfe von OpenPose Position von mehrern Händen einlesen (Einer oder Zwei Personen)
+
 
 ## Vorgehensweise & Technologien
  ### Vorgehensweise
@@ -23,7 +25,7 @@ Unser Ziel ist es eine Schnittstelle zwischen Mensch und Maschine zu erstellen, 
     - Implementieren einer Kalibrierungsfunktion, um die Gestenerkennung an verschiedene Benutzer anzupassen.
  - Schnittstelle zwischen Gestik und Pong
     - Entwickeln einer Schnittstelle, die die Paddles mithilfe der Handgestik bewegt. 
-    - Integration der beiden Module (Pong- und Gestikmodul) 
+    - Integration der beiden Module (Pong- und Gestikmodul)
 - Erweiterung auf mehrere Hände und Spieler
     - Modifizieren des Skripts, um die Positionen von mehreren Händen zu erkennen.
     - Anpassen der Spiellogik, um Eingaben von zwei Spielern zu verarbeiten.
