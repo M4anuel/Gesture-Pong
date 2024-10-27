@@ -30,9 +30,11 @@ data['Cluster'] = cluster_labels
 cluster_averages = data.groupby('Cluster').mean()
 
 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    cluster_averages.T.to_markdown("results.md")
     print(cluster_averages.T)
     """
-    for i in range(1, 4, 1):
+    # If we want the lines one by one and filtered out values
+    for i in range(1, 2, 1):
         row: Series = cluster_averages.loc[i]
         row_filtered: Series = row[row > 0.0]
         print(row_filtered)
