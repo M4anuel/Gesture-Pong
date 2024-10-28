@@ -6,6 +6,7 @@ Unser Ziel ist es eine Schnittstelle zwischen Mensch und Maschine zu erstellen, 
  - [x] Schnittstelle zwischen Gestik und Pong realisieren
  
 <img src="./Media/example_play.gif" alt="Pong V1 mit Gesten gesteuert" width="500"/>
+
 ### Optionale Ziele
  - [ ] Einzelspieler- & Mehrspielermodus
  - [ ] Mithilfe von OpenPose/OpenCV Position von mehrern Händen einlesen (Einer oder Zwei Personen)
