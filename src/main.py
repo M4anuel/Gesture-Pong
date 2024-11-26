@@ -113,7 +113,7 @@ def game_loop(player1_clicked, player2_clicked):
             menu()
             break
         delta_time = clock.tick(target_fps) / 10
-        if step == 2:
+        if step == 4: # the bigger this number the bigger the disparity between fps while looking at fingers vs only draw update
             success, img = cap.read()
             print(delta_time)
             if not success:
