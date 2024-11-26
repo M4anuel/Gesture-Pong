@@ -7,16 +7,20 @@ import mediapipe as mp
 from pygame.locals import USEREVENT
 import tkinter as tk
 
+target_fps = 360
 ball_speed_x = 4
 ball_speed_y = 4
 player1_speed = 0
-player2_speed = 6
+player2_speed = 0
 screen_width, screen_height = 1280, 800
 player2_points, player1_points = 0, 0
 paddle_width = 20
 paddle_height = 100
 ball_radius = 30
+winning_points = 10
 options = ['Bot', 'Gesture', 'WASD', 'Arrows']
+sensibility_gesture = 1.1 # so that not the upmost part of the webcam is the upmost part of the playing field
+show_cam = True
 
 
 def animate_ball(delta_time, player1, player2, ball):
@@ -49,13 +53,15 @@ def animate_player1(finger_y, player1):
     if player1.bottom >= screen_height:
         player1.bottom = screen_height
 
-def animate_player2(delta_time, player2, ball):
+def animate_cpu(delta_time, player2, ball):
     global player2_speed
-    player2.y += player2_speed * delta_time
-    if ball.centery < player2.centery:
-        player2_speed = -6
-    if ball.centery > player2.centery:
-        player2_speed = 6
+   # speed = 6 * clock.get_fps()/60))
+    player2.y += player2_speed*delta_time
+    lookahead = 3
+    if ball.centery < player2.centery and ball.centery + ball_speed_y*lookahead < player2.centery:
+        player2_speed = -min(abs(ball_speed_y),6)
+    if ball.centery > player2.centery and ball.centery + ball_speed_y*lookahead > player2.centery:
+        player2_speed = min(abs(ball_speed_y), 6)
     if player2.top <= 0:
         player2.top = 0
     if player2.bottom >= screen_height:
@@ -89,7 +95,6 @@ def game_loop(player1_clicked, player2_clicked):
     player1.centery = screen_height / 2
     player2 = pygame.Rect(0, 0, paddle_width, paddle_height)
     player2.midright = (screen_width, screen_height / 2)
-    target_fps = 360
     REFRESH_EVENT = USEREVENT + 1
     pygame.time.set_timer(REFRESH_EVENT, 1000 // target_fps)
     score_font = pygame.font.Font(None, 100)
@@ -100,57 +105,62 @@ def game_loop(player1_clicked, player2_clicked):
     mpHands = mp.solutions.hands
     hands = mpHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
     mpDraw = mp.solutions.drawing_utils
-
+    step = 0
     while True:
-        if (player1_points == 5):
-            cv2.destroyAllWindows()
-            pygame.quit()
-            menu()
-            break
-        elif(player2_points == 5):
+        if (player1_points >= winning_points or player2_points >= winning_points):
             cv2.destroyAllWindows()
             pygame.quit()
             menu()
             break
         delta_time = clock.tick(target_fps) / 10
-        success, img = cap.read()
-        if not success:
-            print("Failed to capture image")
-            continue
+        if step == 2:
+            success, img = cap.read()
+            print(delta_time)
+            if not success:
+                print("Failed to capture image")
+                continue
+            img_scalefactor = 1 #didn't improve framerate
+            resized_image = img # cv2.resize(img, (int(1920*img_scalefactor), int(1080*img_scalefactor))) 
+            imgRGB = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
+            results = hands.process(imgRGB)
+            finger_y = screen_height / 2  # Default position if no hand is detected
+            pinch_detected = False
 
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results = hands.process(imgRGB)
-        finger_y = screen_height / 2  # Default position if no hand is detected
-        pinch_detected = False
+            if results.multi_hand_landmarks:
+                for handLms in results.multi_hand_landmarks:
+                    if handLms.landmark[9].x < handLms.landmark[5].x:  # This should indicate the right hand
+                        thumb_tip = handLms.landmark[4]
+                        index_finger_tip = handLms.landmark[8]
+                        h, w, _ = resized_image.shape
+                        cx, cy = int(index_finger_tip.x * w), int(index_finger_tip.y * h)
+                        finger_y = (screen_height * cy / h)*sensibility_gesture  # Scale position
 
-        if results.multi_hand_landmarks:
-            for handLms in results.multi_hand_landmarks:
-                if handLms.landmark[9].x < handLms.landmark[5].x:  # This should indicate the right hand
-                    thumb_tip = handLms.landmark[4]
-                    index_finger_tip = handLms.landmark[8]
-                    h, w, _ = img.shape
-                    cx, cy = int(index_finger_tip.x * w), int(index_finger_tip.y * h)
-                    finger_y = screen_height * cy / h  # Scale position
+                        # Calculate the distance between thumb tip and index finger tip
+                        distance = ((index_finger_tip.x - thumb_tip.x)**2 + (index_finger_tip.y - thumb_tip.y)**2)**0.5
+                        if distance < 0.05:  # Threshold for detecting a pinch gesture
+                            pinch_detected = True
 
-                    # Calculate the distance between thumb tip and index finger tip
-                    distance = ((index_finger_tip.x - thumb_tip.x)**2 + (index_finger_tip.y - thumb_tip.y)**2)**0.5
-                    if distance < 0.05:  # Threshold for detecting a pinch gesture
-                        pinch_detected = True
+                        # Draw hand landmarks on the image
+                        mpDraw.draw_landmarks(resized_image, handLms, mpHands.HAND_CONNECTIONS)
 
-                    # Draw hand landmarks on the image
-                    mpDraw.draw_landmarks(img, handLms, mpHands.HAND_CONNECTIONS)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == REFRESH_EVENT:
+                    pass
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == REFRESH_EVENT:
-                pass
+            if pinch_detected:
+                animate_player1(finger_y, player1)
+            step = 0
+                # Display hand tracking window
+            if show_cam:
+                cv2.imshow("Hand Tracking", resized_image)
 
-        if pinch_detected:
-            animate_player1(finger_y, player1)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
-        animate_player2(delta_time, player2, ball)
+        animate_cpu(delta_time, player2, ball)
         animate_ball(delta_time, player1, player2, ball)
 
         # Draw game objects
@@ -169,10 +179,8 @@ def game_loop(player1_clicked, player2_clicked):
         pygame.display.update()
         pygame.time.set_timer(REFRESH_EVENT, 1000 // target_fps)
 
-        # Display hand tracking window
-        cv2.imshow("Hand Tracking", img)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        
+        step += 1
 
     cap.release()
     cv2.destroyAllWindows()
