@@ -20,7 +20,6 @@ ball_radius = 30
 winning_points = 10
 options = ['Bot', 'Gesture', 'WASD', 'Arrows']
 sensibility_gesture = 1.1 # so that not the upmost part of the webcam is the upmost part of the playing field
-show_cam = True
 
 
 def animate_ball(delta_time, player1, player2, ball):
@@ -113,7 +112,7 @@ def game_loop(player1_clicked, player2_clicked, camera_displied):
             menu()
             break
         delta_time = clock.tick(target_fps) / 10
-        if step == 4: # the bigger this number the bigger the disparity between fps while looking at fingers vs only draw update
+        if step == 2: # the bigger this number the bigger the disparity between fps while looking at fingers vs only draw update
             success, img = cap.read()
             print(delta_time)
             if not success:
@@ -154,7 +153,7 @@ def game_loop(player1_clicked, player2_clicked, camera_displied):
                 animate_player1(finger_y, player1)
             step = 0
                 # Display hand tracking window
-            if show_cam:
+            if camera_displied == 1:
                 cv2.imshow("Hand Tracking", resized_image)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
