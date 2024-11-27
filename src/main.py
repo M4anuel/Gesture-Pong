@@ -81,10 +81,10 @@ def reset_ball(ball):
     ball.y = random.randint(10, screen_height - 10)
     ball_speed_x *= random.choice([1, -1])
 
-def game_loop(player1_clicked, player2_clicked):
+def game_loop(player1_clicked, player2_clicked, camera_displied):
     global ball_speed_x, ball_speed_y, player1_speed, player2_speed, screen_width, screen_height,\
         player1_points, player2_points, paddle_width, paddle_height, ball_radius
-    print(player1_clicked, player2_clicked)
+    print(player1_clicked, player2_clicked, camera_displied)
     pygame.init()
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("Ponggame")
@@ -191,7 +191,7 @@ def menu():
     root.title("Gesture-Pong")
     root.eval("tk::PlaceWindow . center")
     root.configure(background="black")
-    btn_game = tk.Button(root, text="Gesture-Pong", command=lambda: [game_loop(player1_clicked.get(), player2_clicked.get()), root.destroy()])
+    btn_game = tk.Button(root, text="Gesture-Pong", command=lambda: [game_loop(player1_clicked.get(), player2_clicked.get(), camera_displied.get()), root.destroy()])
     btn_game.pack()
     player1_clicked = tk.StringVar()
     player2_clicked = tk.StringVar()
@@ -201,6 +201,10 @@ def menu():
     player2_drop_down = tk.OptionMenu(root, player2_clicked, *options)
     player1_drop_down.pack()
     player2_drop_down.pack()
+    camera_displied = tk.IntVar()
+    camera_displied.set(1)
+    camera_display = tk.Checkbutton(root, text="Camera Display", variable=camera_displied, onvalue=1, offvalue=0)
+    camera_display.pack()
 
     root.mainloop()
 
