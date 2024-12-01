@@ -338,6 +338,7 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
         success, img = cap.read() # so cam already turns on
         mpHands = mp.solutions.hands
         hands = mpHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
+        clock = pygame.time.Clock()
     step = 0
     fps_font = pygame.font.Font(None, 30)
     old_score = -1 # so we get a countdown at the game start
@@ -431,7 +432,6 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
         screen.blit(fps_surface, (10, 10))
         pygame.display.update()
         step += 1
-        
-    
-    
+ 
+
 game_loop()
