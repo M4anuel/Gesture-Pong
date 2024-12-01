@@ -6,7 +6,7 @@ import mediapipe as mp
 import time
 
 
-target_fps = 60
+target_fps = 360
 player2_speed = 0
 player1_speed = 0
 screen_size_options = [
@@ -315,7 +315,7 @@ def winner_screen(winner, player1, player2, ball) -> str:
 
 def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = None):
     global ball_speed_x, ball_speed_y, player2_speed, player1_speed, screen_width, screen_height,\
-    player2_points, player1_points, paddle_width, paddle_height, ball_radius, reset_start_time
+    player2_points, player1_points, paddle_width, paddle_height, ball_radius, reset_start_time, paddle_height
 
     player1_control, player2_control = menu(player1_controls, player2_controls)
     control_mapping = ["wasd", "arrow_keys", "gesture", "bot"]
@@ -332,7 +332,7 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
     cap = cap
     hands = None
     font = pygame.font.Font(None, 50)
-    countdown_font = pygame.font.Font(None, 500)
+    countdown_font = pygame.font.Font(None, int(paddle_height*2))
     # Display "loading" message if gesture control is enabled
     if (player1_control == 2 or player2_control == 2) and (cap == None or mpHands == None):
         screen.fill("black")
@@ -358,7 +358,7 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
             elif action == "menu":
                 game_loop(player2_control, player1_control, cap = cap, mpHands=mpHands)
         
-        delta_time = 5/30   #clock.tick(target_fps) / 10
+        delta_time =  clock.tick(target_fps) / 10
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
