@@ -21,7 +21,7 @@ player1_points, player2_points = 0, 0
 paddle_height = screen_height/6.5 #100
 paddle_width = paddle_height/5 #20
 ball_radius = paddle_height*0.3 #30
-winning_points = 5
+winning_points = 1
 sensibility_gesture = 1.1 # so that not the upmost part of the webcam is the upmost part of the playing field
 ball_speed_x = screen_height/100
 ball_speed_y = ball_speed_x
@@ -324,7 +324,8 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
     ball = pygame.Rect(screen_width // 2 - ball_radius // 2, screen_height // 2 - ball_radius // 2, ball_radius, ball_radius)
     
     mpHands = mpHands
-    cap=cap
+    cap = cap
+    hands = None
     # Display "loading" message if gesture control is enabled
     if (player1_control == 2 or player2_control == 2) and (cap == None or mpHands== None):
         font = pygame.font.Font(None, 50)
@@ -332,15 +333,25 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
         loading_message = font.render("Loading CV2 and Gesture Recognition...", True, "white")
         screen.blit(loading_message, (screen_width // 2 - loading_message.get_width() // 2, screen_height // 2 - loading_message.get_height() // 2))
         pygame.display.update()
-        
         # Perform the gesture recognition setup
         cap = cv2.VideoCapture(0)
+        success, img = cap.read() # so cam already turns on
         mpHands = mp.solutions.hands
         hands = mpHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
     step = 0
     fps_font = pygame.font.Font(None, 30)
     old_score = -1 # so we get a countdown at the game start
     while True:
+        # Check for winner before countdown cus of bug
+        if player2_points >= winning_points or player1_points >= winning_points:
+            winner = "Player 2" if player2_points >= winning_points else "Player 1"
+            action = winner_screen(winner, player1, player2, ball)
+            if action == "restart":
+                player2_points, player1_points = 0, 0
+                old_score = -1
+                continue
+            elif action == "menu":
+                game_loop(player2_control, player1_control, cap = cap, mpHands=mpHands)
         # Countdown before game start
         if old_score < player1_points + player2_points:
             old_score+=1
@@ -420,16 +431,7 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
         screen.blit(fps_surface, (10, 10))
         pygame.display.update()
         step += 1
-        # Check for winner
-        if player2_points >= winning_points or player1_points >= winning_points:
-            winner = "Player 2" if player2_points >= winning_points else "Player 1"
-            action = winner_screen(winner, player1, player2, ball)
-            if action == "restart":
-                player2_points, player1_points = 0, 0
-                old_score = -1
-                continue
-            elif action == "menu":
-                game_loop(player2_control, player1_control, cap = cap, mpHands=mpHands)
+        
     
     
 game_loop()
