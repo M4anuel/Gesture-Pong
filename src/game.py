@@ -356,6 +356,7 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
                 player2_points, player1_points = 0, 0
                 continue
             elif action == "menu":
+                player2_points, player1_points = 0, 0
                 game_loop(player2_control, player1_control, cap = cap, mpHands=mpHands)
         
         delta_time =  clock.tick(target_fps) / 10
@@ -399,7 +400,7 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
             countdown_text = countdown_font.render(str(remaining_time+1), True, "white")
             screen.blit(countdown_text, (screen_width // 2 - countdown_text.get_width() // 2, screen_height // 3 - countdown_text.get_height() // 2))
 
-            if elapsed_time >= 3:
+            if elapsed_time >= 0:
                 ball_speed_x = screen_height / 100 * random.choice([1, -1])
                 ball_speed_y = ball_speed_x * random.choice([1, -1])
                 reset_start_time = None
