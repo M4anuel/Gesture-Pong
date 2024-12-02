@@ -75,17 +75,17 @@ def animate_ball(delta_time, player2, player1, ball):
     if ball.top <= 0:
         ball_speed_y *= -1
         ball.top = 0
-    if ball.right >= screen_width:
+    if ball.right > screen_width:
         points_won("player1")
         reset_ball(ball)
-    if ball.left <= 0:
+    if ball.left < 0:
         points_won("player2")
         reset_ball(ball)
     if ball.left >= screen_width or ball.left <= 0:
         ball_speed_x *= -1
     if ball.colliderect(player2):
         ball_speed_x *= -1
-        ball.x = 0 + paddle_width
+        ball.x = 0 + paddle_width + ball_radius
     if ball.colliderect(player1):
         ball_speed_x *= -1
         ball.x = screen_width - paddle_width - ball_radius
@@ -397,8 +397,8 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
             elapsed_time = time.time() - reset_start_time
             remaining_time = max(0, int(3 - elapsed_time))
 
-            countdown_text = countdown_font.render(str(remaining_time+1), True, "white")
-            screen.blit(countdown_text, (screen_width // 2 - countdown_text.get_width() // 2, screen_height // 3 - countdown_text.get_height() // 2))
+            # countdown_text = countdown_font.render(str(remaining_time+1), True, "white")
+            # screen.blit(countdown_text, (screen_width // 2 - countdown_text.get_width() // 2, screen_height // 3 - countdown_text.get_height() // 2))
 
             if elapsed_time >= 0:
                 ball_speed_x = screen_height / 100 * random.choice([1, -1])
