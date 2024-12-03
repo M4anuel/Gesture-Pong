@@ -16,7 +16,7 @@ screen_size_options = [
         (1600, 900),
         (1920, 1080)
     ]
-screen_size_index = 4
+screen_size_index = 3
 screen_width, screen_height = screen_size_options[screen_size_index][0], screen_size_options[screen_size_index][1]
 player1_points, player2_points = 0, 0
 paddle_height = screen_height/6.5 #100
@@ -28,6 +28,7 @@ ball_speed_x = screen_height/100
 ball_speed_y = ball_speed_x
 paddle_speed = ball_speed_y
 reset_start_time = None
+initilaize_start = False
 
 class Player:
     def __init__(self, x, y, width, height, control_type):
@@ -273,8 +274,8 @@ def winner_screen(winner, player1, player2) -> str:
 
         # Display scores
         score_font = pygame.font.Font(None, 100)
-        player2_score_surface = score_font.render(str(player2_points), True, "white")
-        player1_score_surface = score_font.render(str(player1_points), True, "white")     
+        player2_score_surface = score_font.render(str(player2_points), True, "blue")
+        player1_score_surface = score_font.render(str(player1_points), True, "red")
         screen.blit(player2_score_surface, (3 * screen_width // 4, 20))
         screen.blit(player1_score_surface, (screen_width // 4, 20))
 
@@ -291,6 +292,62 @@ def winner_screen(winner, player1, player2) -> str:
 
     while True:
         draw_winner_screen()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    selected_option = (selected_option - 1) % len(options)
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    selected_option = (selected_option + 1) % len(options)
+                elif event.key == pygame.K_RETURN :
+                    if selected_option == 0:  # Restart
+                        return "restart"
+                    elif selected_option == 1:  # Change Controls
+                        return "menu"
+                    elif selected_option == 2:  # Exit
+                        pygame.quit()
+                        sys.exit()
+
+def restartign_screen(player1, player2, player1_control, player2_control):
+    pygame.init()
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Start Game")
+    font = pygame.font.Font(None, 50)
+
+    options = ["Restart", "Change Controls", "Exit"]
+    conrtol_options = ["WASD", "Arrow Keys", "Gesture", "Bot"]
+    selected_option = 0
+
+    def draw_restartign_screen():
+        screen.fill("black")
+         # Display field
+        pygame.draw.rect(screen, "white", player2.rect)
+        pygame.draw.rect(screen, "white", player1.rect)
+        pygame.draw.aaline(screen, "white", (screen_width / 2, 0), (screen_width / 2, screen_height))
+        #pygame.draw.ellipse(screen, "white", ball)
+
+        # Display scores
+        score_font = pygame.font.Font(None, 100)
+        player2_score_surface = score_font.render(str(player2_points), True, "blue")
+        player1_score_surface = score_font.render(str(player1_points), True, "red")
+        screen.blit(player2_score_surface, (3 * screen_width // 4, 20))
+        screen.blit(player1_score_surface, (screen_width // 4, 20))
+        player1_controls_surface = score_font.render(str(f'Player 1: {conrtol_options[player2_control]}'), True, "white")
+        player2_controls_surface = score_font.render(str(f'Player 2: {conrtol_options[player1_control]}'), True, "white")
+        screen.blit(player1_controls_surface, (screen_width // 2 - 38 * len("Player 2: Arrow Keys"), 150))
+        screen.blit(player2_controls_surface, (screen_width // 2, 150))
+
+        for i, option in enumerate(options):
+            color = "yellow" if selected_option == i else "white"
+            text = font.render(option, True, color)
+            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height//2-80 + i * 50))
+
+        pygame.display.update()
+
+    while True:
+        draw_restartign_screen()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -329,14 +386,14 @@ def startign_screen(player1, player2, player1_control, player2_control):
 
         # Display scores
         score_font = pygame.font.Font(None, 100)
-        player2_score_surface = score_font.render(str(player2_points), True, "white")
-        player1_score_surface = score_font.render(str(player1_points), True, "white")
+        player2_score_surface = score_font.render(str(player2_points), True, "blue")
+        player1_score_surface = score_font.render(str(player1_points), True, "red")
         screen.blit(player2_score_surface, (3 * screen_width // 4, 20))
         screen.blit(player1_score_surface, (screen_width // 4, 20))
-        player1_controls_surface = score_font.render(str(f'Player 1: {conrtol_options[player1_control]}'), True, "white")
-        player2_controls_surface = score_font.render(str(f'Player 2: {conrtol_options[player2_control]}'), True, "white")
-        screen.blit(player1_controls_surface, (screen_width // 2  -17*len("Player 2: Arrow Keys"), 50))
-        screen.blit(player2_controls_surface, (screen_width // 2  -17*len("Player 2: Arrow Keys"), 150))
+        player1_controls_surface = score_font.render(str(f'Player 1: {conrtol_options[player2_control]}'), True, "white")
+        player2_controls_surface = score_font.render(str(f'Player 2: {conrtol_options[player1_control]}'), True, "white")
+        screen.blit(player1_controls_surface, (screen_width // 2 - 38 * len("Player 2: Arrow Keys"), 150))
+        screen.blit(player2_controls_surface, (screen_width // 2 , 150))
 
         for i, option in enumerate(options):
             color = "yellow" if selected_option == i else "white"
@@ -366,10 +423,9 @@ def startign_screen(player1, player2, player1_control, player2_control):
                         sys.exit()
 
 
-
 def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = None, controles_changed = False):
     global ball_speed_x, ball_speed_y, player2_speed, player1_speed, screen_width, screen_height,\
-    player2_points, player1_points, paddle_width, paddle_height, ball_radius, reset_start_time, paddle_height
+    player2_points, player1_points, paddle_width, paddle_height, ball_radius, reset_start_time, paddle_height, initilaize_start
 
     player1_control, player2_control = menu(player1_controls, player2_controls)
     control_mapping = ["wasd", "arrow_keys", "gesture", "bot"]
@@ -401,12 +457,22 @@ def game_loop(player1_controls = 0, player2_controls = 1, cap = None, mpHands = 
         clock = pygame.time.Clock()
 
     fps_font = pygame.font.Font(None, 30)
+    reset_start_time = time.time()
+    ball_speed_x, ball_speed_y = 0, 0
     while True:
+        if not initilaize_start:
+            initilaize_start = True
+            action = startign_screen(player1, player2, player1_control, player2_control)
+            if action == "start":
+                continue
+            elif action == "menu":
+                initilaize_start = False
+                game_loop(player1_controls = player1_controls, player2_controls = player2_controls)
         if controles_changed:
             controles_changed = False
             player1_points, player2_points = 0, 0
-            action = startign_screen(player1, player2, player1_control, player2_control)
-            if action == "start":
+            action = restartign_screen(player1, player2, player1_control, player2_control)
+            if action == "restart":
                 continue
             elif action == "menu":
                 game_loop(player2_control, player1_control, cap = cap, mpHands=mpHands, controles_changed = True)
